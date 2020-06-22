@@ -102,3 +102,4 @@ class DescriptiveStatistics {
 
 let d = new DescriptiveStatistics();
 window.addEventListener('load', event => d.syncData());
+
