@@ -49,27 +49,26 @@ class DescriptiveStatistics {
             terminalNodeList[i].name = "stat-value-" + terminalNodeList[i].name;
 
             let value = terminalNodeList[i].value;
-            let sValue = String(value);
-
             // 如果值是一个小数，那么为了便于展示，仅取到小数点后两位.
-            if (value - Math.floor(value) > 0) {
-                let integerPart = sValue.slice(0, sValue.indexOf("."));
-                let mantissaPart = sValue.slice(sValue.indexOf(".")+1, sValue.length-1);
-
-                if (mantissaPart.length == 1) {
-                    mantissaPart = mantissaPart[0] + "0";
-                }
-
-                mantissaPart = mantissaPart[0] + mantissaPart[1];
-
-                terminalNodeList[i].value = integerPart + "." + mantissaPart;
-
-                // 如果值是一个小数而且还小于或等于0.01，那么还要在前面加上「小于等于号」
-                if (value <= 0.01) {
-                    terminalNodeList[i].value = "<=0.01"
-                }
+            // 如果值小于0.01，那么置为<=0.01
+            // console.log(`value: ${value}`);
+            // console.log(`value less than point 1: ${value<=0.01}`);
+            // console.log(`trunc: ${Math.trunc(value)}`);
+            // console.log(`minus: ${value-Math.trunc(value)}`);
+            // console.log(`greater than 0: ${value-Math.trunc(value)>0}`);
+            if (value === 0) {
+                terminalNodeList[i].value = "0";
+            }
+            else if (value <= 0.01) {
+                terminalNodeList[i].value = "<=0.01";
             }
             else {
+                let fValue = value.toFixed(2);
+                let sValue = String(fValue);
+                if ((sValue[sValue.length-2] + sValue[sValue.length-1]) === "00") {
+                    sValue = sValue.slice(0, sValue.length-3);
+                }
+
                 terminalNodeList[i].value = sValue;
             }
         }
