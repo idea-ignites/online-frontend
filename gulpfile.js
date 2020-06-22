@@ -11,7 +11,10 @@ function build() {
         debug: true,
         entries: ['main.ts']
     })
-    .plugin(tsify)
+    .plugin(tsify, {
+        "noImplicitAny": false,
+        "lib": ["es2018", "dom"]
+    })
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(dest('.'));
