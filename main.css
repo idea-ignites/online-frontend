@@ -1,0 +1,167 @@
+/* Specify in CSS */
+code { font-family: 'Fira Code', monospace; }
+
+body { font-family: 'Fira Code', monospace; }
+
+@supports (font-variation-settings: normal) {
+  code { font-family: 'Fira Code VF', monospace; }
+}
+
+body {
+    margin: 0px;
+    background-color: rgb(57,79,89);
+    width: 100%;
+    height: 1400px;
+}
+
+.grid-container {
+    display: grid;
+    /* grid-template-columns: min-content auto; */
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.card {
+    background-color: white;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 4rem;
+    margin-right:4rem;
+    padding: 2rem;
+    column-gap: 10px;
+    row-gap: 5px;
+    overflow: scroll;
+}
+
+.card h2 {
+    margin-top: 0px;
+}
+
+.selected-card {
+    outline-color: #dac4aa;
+    outline-width: 8px;
+    outline-style: solid;
+    outline-offset: -12px;
+    outline-style: solid;
+}
+
+
+.card:hover {
+    /* cursor: pointer; */
+}
+
+.card-list {
+    margin-top: 12rem;
+}
+
+.banner {
+    width: -webkit-fill-available;
+    width: -moz-available;
+    height: auto;
+    margin-top: 0px;
+    position: fixed;
+    top: 0px;
+    background: white;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+hr {
+    border-style: solid;
+    border-width: 2px;
+    border-color: gray;
+    margin-bottom: 1em;
+}
+
+input {
+    border-style: solid;
+    border-width: 2px;
+    font-size: 1rem;
+    border-color: gray;
+    padding: 0.5rem; 
+    font-family: 'Fira Code', monospace;
+    margin-top: 1.5rem;
+}
+
+input:focus {
+    outline: none;
+}
+
+.button-list {
+    margin-top: 1.5rem;
+}
+
+#title-box h1 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+button {
+    background-color: white;
+    border-style: solid;
+    border-color: gray;
+    font-size: 1rem;
+    padding: 0.5rem;
+    font-family: 'Fira Code', monospace;
+    margin-right: 0.8rem;
+}
+
+button:hover {
+    cursor: pointer;
+    color: rgb(57,79,89);
+    border-color: rgb(57,79,89);
+}
+
+.prompt-text {
+    margin-top: 1rem;
+}
+
+#new-object-textarea {
+    outline: none;
+    resize: none;
+    border-radius: 0px;
+    border-style: solid;
+    border-color: gray;
+    border-width: 2px;
+    font-size: 0.9rem;
+    font-family: 'Fira Code', monospace;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+button:focus {
+    outline: none;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.stat {
+    width: 240px;
+    /* height: 240px; */
+    /* border-style: solid; */
+    /* border-width: 2px; */
+    /* border-color: gray; */
+    margin: 14px;
+}
+
+.stat-number {
+    text-align: center;
+    font-size: 40px;
+}
+
+.stat-description {
+    text-align: center;
+}

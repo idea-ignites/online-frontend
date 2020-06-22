@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="/bundle.js" defer></script>
+    <link href="/main.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v5.js" defer></script>
+</head>
+
+<body>
+    <header class=banner>
+        <div id="title-box">
+            <h1>访客流量统计</h1>
+        </div>
+        <p id="description">这份报告生成于2020-06-22T17:10:00+08:00</p>
+    </header>
+    <div class="card-list">
+        <div class="card" id="card-descriptive-statistics">
+            <h2>描述性统计</h2>
+            <hr>
+            <div class="flex-container">
+                <div class="stat"><div class="stat-number">2</div><div class="stat-description">过去5分钟内独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">4</div><div class="stat-description">过去30分钟内独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">8</div><div class="stat-description">过去1小时内独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">18</div><div class="stat-description">过去12小时内独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">20</div><div class="stat-description">过去1天内独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">40</div><div class="stat-description">过去2天内独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">50</div><div class="stat-description">过去3天内独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">60</div><div class="stat-description">过去1周内独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">160</div><div class="stat-description">过去1个月内独立访客数量</div></div>
+            </div>
+        </div>
+        <div class="card" id="card-moving-average">
+            <h2>移动平均</h2>
+            <hr>
+            <div class="flex-container">
+                <div class="stat"><div class="stat-number">1.00</div><div class="stat-description">过去1分钟内的独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">0.20</div><div class="stat-description">过去5分钟中平均每分钟</div></div>
+                <div class="stat"><div class="stat-number">0.10</div><div class="stat-description">过去10分钟中平均每分钟</div></div>
+                <div class="stat"><div class="stat-number"><=0.01</div><div class="stat-description">过去30分钟中平均每分钟</div></div>
+                <div class="stat"><div class="stat-number"><=0.01</div><div class="stat-description">过去1个小时中平均每分钟</div></div>
+                <div class="stat"><div class="stat-number"><=0.01</div><div class="stat-description">过去12个小时中平均每分钟</div></div>
+
+                <div class="stat"><div class="stat-number">50</div><div class="stat-description">这1天的独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">40</div><div class="stat-description">这3天当中每天的平均</div></div>
+                <div class="stat"><div class="stat-number">20</div><div class="stat-description">这1周当中每天的平均</div></div>
+
+                <div class="stat"><div class="stat-number">90</div><div class="stat-description">这1个月的独立访客数量</div></div>
+                <div class="stat"><div class="stat-number">80</div><div class="stat-description">这3个月当中的每一个月平均</div></div>
+                <div class="stat"><div class="stat-number">50</div><div class="stat-description">这6个月当中的每一个月平均</div></div>
+            </div>
+        </div>
+        <div class="card" id="card-time-series">
+            <h2>时间序列</h2>
+            <hr>
+        </div>
+    </div>
+</body>
+
+</html>
