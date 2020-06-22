@@ -1,0 +1,19 @@
+{
+    "apps": {
+        "http": {
+            "servers": {
+                "fileServer": {
+                    "listen": ["127.0.0.1:4365"],
+                    "routes": [{
+                        "handle": [{
+                            "handler": "file_server",
+                            "root": "/Users/mike/frontend",
+                            "index_names": ["index.html"],
+                            "pass_thru": true
+                        }]
+                    }]
+                }
+            }
+        }
+    }
+}

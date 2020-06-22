@@ -14,11 +14,11 @@ class DescriptiveStatistics {
         });
     }
 
-    private async getData() {
-        return await this.getClient().get("/onlinesInfo").then(r => r.data);
+    public async getData() {
+        return await this.getClient().get("/onlinesInfo").then(res => res.data);
     }
 
-    private processData(data) {
+    public processData(data) {
         let root = data.data.onlinesStats;
         let treeStack = [{"name": "onlineStats", "pointTo": root}];
         let nameList = [];
@@ -77,10 +77,9 @@ class DescriptiveStatistics {
         return terminalNodeList;
     }
 
-    private setData(data) {
+    public setData(data) {
         for (let item of data) {
-            let domElement = document.getElementById(item.name);
-            // console.log(`element: ${domElement}`);
+            let domElement = document.getElementById(item);
             if (domElement !== null) {
                 domElement.textContent = item.value;
             }
@@ -89,17 +88,21 @@ class DescriptiveStatistics {
 
     public async syncData() {
         let data = await this.getData().catch(e => console.log(e));
-        // console.log(`got: ${data}`);
         let processed = this.processData(data);
-        // console.log(`processed: ${JSON.stringify(processed, null, 4)}`);
         this.setData(processed);
 
         let descriptionElement = document.getElementById("description");
         let justNow = new Date();
-        let dateStr = justNow.toISOString();
+        let dateStr = justNow.toDateString();
         descriptionElement.textContent = `这份报告生成于${dateStr}．`;
     }
 }
 
-let d = new DescriptiveStatistics();
-window.addEventListener('load', event => d.syncData());
+async function test() {
+    let d = new DescriptiveStatistics();
+    let data = await d.getData();
+    let processedData = d.processData(data);
+    console.log(processedData);
+}
+
+test();

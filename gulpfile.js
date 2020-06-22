@@ -26,3 +26,4 @@ function watchFileChange() {
 }
 
 exports.default = watchFileChange;
+exports.build = build;
