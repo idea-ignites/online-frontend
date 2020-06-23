@@ -94,8 +94,8 @@ class DescriptiveStatistics {
         this.setData(processed);
 
         let descriptionElement = document.getElementById("description");
-        let justNow = new Date();
-        let dateStr = justNow.toISOString();
+        let computedAt = new Date(data.computedAt);
+        let dateStr = computedAt.toISOString();
         descriptionElement.textContent = `这份报告生成于${dateStr}．`;
     }
 }
