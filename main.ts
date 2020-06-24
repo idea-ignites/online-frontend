@@ -133,6 +133,9 @@ class TimeSeriesAboutThisMonthEveryDay {
 
     private renderData(processed) {
         let data = processed;
+
+        console.log(data);
+
         let s = document.getElementById("ts-thisMonthEveryDay");
         let margin = ({top: 30, right: 30, bottom: 30, left: 30})
         let width = s["width"].animVal.value;
@@ -174,6 +177,42 @@ class TimeSeriesAboutThisMonthEveryDay {
         .attr("transform", `translate(0,${height-margin.bottom})`)
         .attr("stroke-width", "2px")
         .call(axisBottom);
+
+        let xCoords = data.map(d => x(d["from"]));
+
+        d3.select("#ts-thisMonthEveryDay")
+        .append("g")
+        .selectAll("div")
+        .data(xCoords)
+        .enter()
+        .append("rect")
+        .attr("id", (d, i) => `ts-thisMonthEveryDay-prompt-column-${i}`)
+        .attr("y", (d, i) => 0)
+        .attr("x", (d, i) => {
+            return xCoords[i] - (xCoords[1] - xCoords[0]) / 2;
+        })
+        .attr("height", height)
+        .attr("width", (d, i) => {
+            return xCoords[1] - xCoords[0];
+        })
+        .attr("fill-opacity", "0")
+        .on("mouseover", (d, i) => {
+            d3.select(`#ts-thisMonthEveryDay-prompt-column-${i}`)
+            .attr("fill", "lightblue")
+            .attr("fill-opacity", "0.5");
+
+            let from = new Date(data[i].from);
+            let to = new Date(data[i].to);
+            let counts = data[i].counts;
+
+            // d3.select("#ts-thisMonthEveryDay-prompt").text(`从 ${from.getMonth()}月${from.getDay()}日${from.getHours()}点${from.getMinutes()}分 到 ${to.getMonth()}月${to.getDay()}日${to.getHours()}点${to.getMinutes()}分 期间共有 ${counts} 名独立访客曾到访过我站．`);
+            d3.select("#ts-thisMonthEveryDay-prompt").text(`从 ${from.toISOString()} 到 ${to.toISOString()} 期间共有 ${counts} 名独立访客曾经到访过我站．`);
+        })
+        .on("mouseout", (d, i) => {
+            d3.select(`#ts-thisMonthEveryDay-prompt-column-${i}`)
+            .attr("fill", "lightblue")
+            .attr("fill-opacity", "0");
+        });
     }
 
     public async syncData() {
