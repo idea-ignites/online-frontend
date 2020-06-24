@@ -76,11 +76,6 @@ class DescriptiveStatistics {
             let value = terminalNodeList[i].value;
             // 如果值是一个小数，那么为了便于展示，仅取到小数点后两位.
             // 如果值小于0.01，那么置为<=0.01
-            // console.log(`value: ${value}`);
-            // console.log(`value less than point 1: ${value<=0.01}`);
-            // console.log(`trunc: ${Math.trunc(value)}`);
-            // console.log(`minus: ${value-Math.trunc(value)}`);
-            // console.log(`greater than 0: ${value-Math.trunc(value)>0}`);
             if (value === 0) {
                 terminalNodeList[i].value = "0";
             }
