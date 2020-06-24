@@ -1,7 +1,9 @@
 import * as d3 from "d3";
 import axios from "axios";
 
-class DescriptiveStatistics {
+let mainCache = undefined;
+
+class Data {
 
     private baseURL = "https://services.beyondstars.xyz";
 
@@ -14,8 +16,31 @@ class DescriptiveStatistics {
         });
     }
 
+    public async getData() {
+
+        if (mainCache === undefined) {
+            mainCache = {
+                "fetchedAt": Date.now(),
+                "data": await this.getClient().get("/onlinesInfo").then(r => r.data)
+            };
+        }
+        else if ((Date.now() - mainCache.fetchedAt) > 30*1000) {
+            mainCache = {
+                "fetchedAt": Date.now(),
+                "data": await this.getClient().get("/onlinesInfo").then(r => r.data)
+            };
+        }
+
+        return mainCache.data;
+    }
+
+}
+
+class DescriptiveStatistics {
+
     private async getData() {
-        return await this.getClient().get("/onlinesInfo").then(r => r.data);
+        let d = new Data();
+        return await d.getData();
     }
 
     private processData(data) {
@@ -100,6 +125,78 @@ class DescriptiveStatistics {
     }
 }
 
-let d = new DescriptiveStatistics();
-window.addEventListener('load', event => d.syncData());
+class TimeSeriesAboutThisMonthEveryDay {
 
+    private async getData() {
+        let d = new Data();
+        return await d.getData();
+    }
+
+    private processData(data) {
+        return data.data.timeSeriesStats.thisMonthEveryDay;
+    }
+
+    private renderData(processed) {
+        let data = processed;
+        let s = document.getElementById("ts-thisMonthEveryDay");
+        let margin = ({top: 30, right: 30, bottom: 30, left: 30})
+        let width = s["width"].animVal.value;
+        let height = s["height"].animVal.value;
+
+        let x = d3.scaleUtc()
+        .domain(d3.extent(data, d => new Date(d["from"])))
+        .range([margin.left, width - margin.right])
+
+        let y = d3.scaleLinear()
+        .domain([0, d3.max(data, d => Number(d["counts"]))])
+        .range([height - margin.bottom, margin.top])
+
+        let line = d3.line()
+        .x(d => x(d["from"]))
+        .y(d => y(d["counts"]))
+        .curve(d3.curveCatmullRom.alpha(0.8));
+
+        let svgPath = line(data);
+
+        let axisLeft = d3.axisLeft(y).ticks(5);
+        let axisBottom = d3.axisBottom(x).ticks(10);
+
+        d3.selectAll("#ts-thisMonthEveryDay")
+        .append("path")
+        .attr("d", svgPath)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", "2.4");
+
+        d3.selectAll("#ts-thisMonthEveryDay")
+        .append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .attr("stroke-width", "2px")
+        .call(axisLeft);
+
+        d3.selectAll("#ts-thisMonthEveryDay")
+        .append("g")
+        .attr("transform", `translate(0,${height-margin.bottom})`)
+        .attr("stroke-width", "2px")
+        .call(axisBottom);
+    }
+
+    public async syncData() {
+        let d = await this.getData().catch(console.error);
+        let p = this.processData(d);
+        this.renderData(p);
+    }
+
+}
+
+async function main() {
+
+    let d = new DescriptiveStatistics();
+    let t = new TimeSeriesAboutThisMonthEveryDay();
+
+    await d.syncData();
+    await t.syncData();
+
+}
+
+window.addEventListener('load', event => main());

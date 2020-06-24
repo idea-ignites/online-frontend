@@ -5,7 +5,6 @@
     <title>访客流量统计</title>
     <script src="/bundle.js" defer></script>
     <link href="/main.css" rel="stylesheet">
-    <script src="https://d3js.org/d3.v5.js" defer></script>
     <link rel="icon" href="/logo.png" sizes="400x400" type="image/png">
 </head>
 
@@ -52,8 +51,15 @@
         <div class="card" id="card-time-series">
             <h2>时间序列</h2>
             <hr>
+            <svg id="ts-thisMonthEveryDay" version="1.1"
+                baseProfile="full"
+                width="100%" height="320px"
+                xmlns="http://www.w3.org/2000/svg">
+            </svg>
+            <div class="figure-caption">图1：该月每天的独立访客数量</div>
         </div>
     </div>
+    <footer></footer>
 </body>
 
 </html>
