@@ -6,4 +6,4 @@
 
 如图：
 
-![图1](/screenshots/user-interface.png
+![图1](/screenshots/user-interface.png)
