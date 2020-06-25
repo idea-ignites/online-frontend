@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import * as d3array from "d3-array";
 import axios from "axios";
 
 let mainCache = undefined;
@@ -134,20 +135,18 @@ class TimeSeriesAboutThisMonthEveryDay {
     private renderData(processed) {
         let data = processed;
 
-        console.log(data);
-
         let s = document.getElementById("ts-thisMonthEveryDay");
-        let margin = ({top: 30, right: 30, bottom: 30, left: 30})
+        let margin = ({top: 30, right: 60, bottom: 30, left: 60})
         let width = s["width"].animVal.value;
         let height = s["height"].animVal.value;
 
         let x = d3.scaleUtc()
         .domain(d3.extent(data, d => new Date(d["from"])))
-        .range([margin.left, width - margin.right])
+        .range([margin.left, width - margin.right]);
 
         let y = d3.scaleLinear()
         .domain([0, d3.max(data, d => Number(d["counts"]))])
-        .range([height - margin.bottom, margin.top])
+        .range([height - margin.bottom, margin.top]);
 
         let line = d3.line()
         .x(d => x(d["from"]))
@@ -223,13 +222,141 @@ class TimeSeriesAboutThisMonthEveryDay {
 
 }
 
+class StatisticalInferences {
+
+    private async getData() {
+        let d = new Data();
+        return await d.getData();
+    }
+
+    private processData(unprocessed) {
+        let p = unprocessed.data.statisticalInferences.stayingDurationsThisMonth;
+        return p;
+    }
+
+    private renderData(processed: number[]) {
+        processed = processed.map(d => Math.round(d/(60*1000)));
+
+        let s = document.getElementById("ts-stayingDurationDistributionThisMonth");
+        let margin = ({top: 30, right: 60, bottom: 30, left: 60})
+        let width = s["width"].animVal.value;
+        let height = s["height"].animVal.value;
+        
+        let upBound = d3.median(processed) + 3 * d3.deviation(processed);
+
+        let x = d3.scaleLinear()
+        .domain([d3.min(processed), upBound])
+        .range([margin.left, width - margin.right]);
+
+        let bins = d3.histogram()
+        .domain(d3.extent(processed))
+        .thresholds(x.ticks(40))(processed.filter(d => d <= upBound));
+
+        let y = d3.scaleLinear()
+        .domain([0, d3.max(bins, d => d.length)])
+        .range([height - margin.bottom, margin.top]);
+
+        let axisLeft = d3.axisLeft(y).ticks(5);
+        let axisBottom = d3.axisBottom(x).ticks(10);
+
+        d3.selectAll("#ts-stayingDurationDistributionThisMonth")
+        .append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .attr("stroke-width", "2px")
+        .call(axisLeft);
+
+        d3.selectAll("#ts-stayingDurationDistributionThisMonth")
+        .append("g")
+        .attr("transform", `translate(0,${height-margin.bottom})`)
+        .attr("stroke-width", "2px")
+        .call(axisBottom);
+
+        d3.selectAll("#ts-stayingDurationDistributionThisMonth")
+        .append("g")
+        .attr("fill", "steelblue")
+        .selectAll("rect")
+        .data(bins)
+        .join("rect")
+        .attr("x", d => x(d.x0) + 1)
+        .attr("width", d => Math.max(0, x(d.x1) - x(d.x0) - 1))
+        .attr("y", d => y(d.length))
+        .attr("height", d => y(0) - y(d.length));
+
+        let appearances = d3array.rollup(processed, v => v.length, k => k);
+        let counts = Array.from(appearances);
+        let cumProbs = 0;
+        let distribution = [];
+        for (let i = 0; i < counts.length; i++) {
+            cumProbs += counts[i][1]/processed.length;
+            distribution.push({
+                "lte": counts[i][0],
+                "cumProbs": cumProbs
+            });
+        }
+
+        let curated = distribution.filter(d => d.cumProbs <= 0.90);
+
+        console.log(curated);
+
+        let s2 = document.getElementById("ts-stayingDurationCumulativeProbabilities");
+        let margin2 = ({top: 30, right: 60, bottom: 30, left: 60})
+        let width2 = s2["width"].animVal.value;
+        let height2 = s2["height"].animVal.value;
+
+        let x2 = d3.scaleLinear()
+        .domain(d3.extent(curated, d => d.lte))
+        .range([margin2.left, width2-margin2.right]);
+
+        let y2 = d3.scaleLinear()
+        .domain([0, d3.max(curated, d => d.cumProbs)])
+        .range([height2 - margin2.bottom, margin2.top]);
+
+        let axisLeft2 = d3.axisLeft(y2).ticks(5);
+        let axisBottom2 = d3.axisBottom(x2).ticks(10);
+
+        let line = d3.line()
+        .x(d => x2(d["lte"]))
+        .y(d => y2(d["cumProbs"]))
+        .curve(d3.curveCatmullRom.alpha(0.8));
+
+        let svgPath = line(curated);
+
+        d3.selectAll("#ts-stayingDurationCumulativeProbabilities")
+        .append("g")
+        .attr("transform", `translate(${margin2.left},0)`)
+        .attr("stroke-width", "2px")
+        .call(axisLeft2);
+
+        d3.selectAll("#ts-stayingDurationCumulativeProbabilities")
+        .append("g")
+        .attr("transform", `translate(0,${height2-margin2.bottom})`)
+        .attr("stroke-width", "2px")
+        .call(axisBottom2);
+
+        d3.selectAll("#ts-stayingDurationCumulativeProbabilities")
+        .append("path")
+        .attr("d", svgPath)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", "2.4");
+    }
+
+    public async syncData() {
+        let d = await this.getData().catch(console.error);
+        let p = this.processData(d);
+        this.renderData(p);
+    }
+}
+
 async function main() {
 
     let d = new DescriptiveStatistics();
     let t = new TimeSeriesAboutThisMonthEveryDay();
+    let s = new StatisticalInferences();
 
     await d.syncData();
     await t.syncData();
+    await s.syncData();
 
 }
 
